@@ -6,7 +6,12 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
 # from .views import UserViewSet
 from users.views import UserList
 
-router_v1 = DefaultRouter()
+# router_v1 = DefaultRouter()
+
+v1_router = DefaultRouter()
+# v1_router.register('categories', CategoryViewSet)
+# v1_router.register('genres', GenreViewSet)
+# v1_router.register('titles', TitleViewSet)
 # router_v1.register(r'users', UserList)
 
 urlpatterns = [
@@ -17,5 +22,6 @@ urlpatterns = [
     # path(r'auth/', include('djoser.urls.jwt')),
     # path('v1/users/', UserViewSet),
     # path('v1/users/', UserList),
-    path('v1/', include(router_v1.urls)),
+    path('v1/', include(v1_router.urls)),
 ]
+
