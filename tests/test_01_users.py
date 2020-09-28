@@ -1,7 +1,7 @@
 import pytest
 from django.contrib.auth import get_user_model
 
-from .common import create_users_api, auth_client
+from .common import auth_client, create_users_api
 
 
 class Test01UserAPI:

@@ -1,6 +1,6 @@
 import pytest
 
-from .common import create_users_api, auth_client, create_genre
+from .common import auth_client, create_genre, create_users_api
 
 
 class Test03GenreAPI:
