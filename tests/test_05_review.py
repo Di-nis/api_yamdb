@@ -1,6 +1,7 @@
 import pytest
 
-from .common import create_users_api, auth_client, create_titles, create_reviews
+from .common import (auth_client, create_reviews, create_titles,
+                     create_users_api)
 
 
 class Test05ReviewAPI:

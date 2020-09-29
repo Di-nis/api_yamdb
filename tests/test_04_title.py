@@ -1,6 +1,7 @@
 import pytest
 
-from .common import create_users_api, auth_client, create_genre, create_categories, create_titles
+from .common import (auth_client, create_categories, create_genre,
+                     create_titles, create_users_api)
 
 
 class Test04TitleAPI:

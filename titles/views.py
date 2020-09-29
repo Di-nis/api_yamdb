@@ -7,10 +7,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, DestroyModelMixin
 
 from .models import Category, Genre, Title
-from .serializers import TitleListSerializer, TitleCreateSerializer, 
-                        GenreSerializer, CategorySerializer
-from .permissions import IsAdminOrAuthor
-from .filters import TitleFilter
+from .serializers import (TitleListSerializer, TitleCreateSerializer, 
+                          GenreSerializer, CategorySerializer)
+# from .permissions import IsAdminOrAuthor
+# from .filters import TitleFilter
 
 
 class BaseCreateListDestroyViewSet(
@@ -26,7 +26,7 @@ class CategoriesViewSet(BaseCreateListDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = [filters.SearchFilter]
-    permission_classes = [IsAdminOrAuthor, ]
+    # permission_classes = [IsAdminOrAuthor, ]
     search_fields = ['=name', ]
     lookup_field = 'slug'
 
@@ -35,15 +35,15 @@ class GenresViewSet(BaseCreateListDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     filter_backends = [filters.SearchFilter]
-    permission_classes = [IsAdminOrAuthor, ]
+    # permission_classes = [IsAdminOrAuthor, ]
     search_fields = ['=name', ]
     lookup_field = 'slug'
     
 
 class TitlesViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
-    filterset_class = TitleFilter
-    permission_classes = [IsAdminOrAuthor, ]
+    # filterset_class = TitleFilter
+    # permission_classes = [IsAdminOrAuthor, ]
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:

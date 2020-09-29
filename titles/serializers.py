@@ -1,23 +1,24 @@
 from rest_framework import serializers
 from titles.models import Category, Genre, Title
 
-class CategorySerializer(serializers.modelSerializer):
+
+class CategorySerializer(serializers.ModelSerializer):
     '''
     Сериализатор для категорий(типов) произведений:
     «Фильмы», «Книги», «Музыка»
     '''
     class Meta:
-        fields = ('name', 'slug')
+        fields = '__all__'
         model = Category
 
 
-class GenreSerializer(serializers.modelSerializer):
+class GenreSerializer(serializers.ModelSerializer):
     '''
     Сериализатор для жанров произведений.
     Одно произведение может быть привязано к нескольким жанрам.
     '''
     class Meta:
-        fields = ('name', 'slug')
+        fields = '__all__'
         model = Genre
 
 
