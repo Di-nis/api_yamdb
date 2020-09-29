@@ -1,32 +1,51 @@
-from .models import Category, Genre
-from .serializers import (
-    CategorySerializer,
-    GenreSerializer
-)
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework import filters, viewsets
+from rest_framework import filters
+from rest_framework import permissions
+from rest_framework import serializers
+from rest_framework import viewsets
+from rest_framework.generics import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, DestroyModelMixin
+
+from .models import Category, Genre, Title
+from .serializers import (TitleListSerializer, TitleCreateSerializer, 
+                          GenreSerializer, CategorySerializer)
+# from .permissions import IsAdminOrAuthor
+# from .filters import TitleFilter
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
-    '''
-    Для модели категорий (типов) произведений:
-    «Фильмы», «Книги», «Музыка»
-    '''
+class BaseCreateListDestroyViewSet(
+    CreateModelMixin,
+    ListModelMixin,
+    DestroyModelMixin,
+    viewsets.GenericViewSet
+):
+    pass
+
+
+class CategoriesViewSet(BaseCreateListDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (IsAuthenticatedOrReadOnly)
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('=name')
+    filter_backends = [filters.SearchFilter]
+    # permission_classes = [IsAdminOrAuthor, ]
+    search_fields = ['=name', ]
+    lookup_field = 'slug'
 
 
-class GenreViewSet(viewsets.ModelViewSet):
-    '''
-    Для жанров произведений. Одно произведение 
-    может быть привязано к нескольким жанрам.
-    '''
-    serializer_class = GenreSerializer
+class GenresViewSet(BaseCreateListDestroyViewSet):
     queryset = Genre.objects.all()
-    permission_classes = (IsAuthenticatedOrReadOnly)
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('=name',)
+    serializer_class = GenreSerializer
+    filter_backends = [filters.SearchFilter]
+    # permission_classes = [IsAdminOrAuthor, ]
+    search_fields = ['=name', ]
+    lookup_field = 'slug'
+    
+
+class TitlesViewSet(viewsets.ModelViewSet):
+    filter_backends = [DjangoFilterBackend]
+    # filterset_class = TitleFilter
+    # permission_classes = [IsAdminOrAuthor, ]
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return TitleCreateSerializer
+        return TitleListSerializer
