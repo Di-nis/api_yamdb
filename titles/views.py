@@ -41,7 +41,9 @@ class GenresViewSet(BaseCreateListDestroyViewSet):
     
 
 class TitlesViewSet(viewsets.ModelViewSet):
+    queryset = Title.objects.all()
     filter_backends = [DjangoFilterBackend]
+    lookup_field = 'id'
     # filterset_class = TitleFilter
     # permission_classes = [IsAdminOrAuthor, ]
 

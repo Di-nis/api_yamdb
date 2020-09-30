@@ -34,6 +34,12 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+# USER_CHOICES = [
+#     ('US', 'user'),
+#     ('MO', 'moderator'),
+#     ('AD', 'admin')
+# ]
+
 
 # class User(EmailAbstractUser):
 # class User(AbstractBaseUser, PermissionsMixin):
@@ -47,7 +53,19 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    # role = 
+    USER = 'US'
+    MODERATOR = 'MO'
+    ADMIN = 'AD'
+    USER_CHOICES = [
+        (USER, 'user'),
+        (MODERATOR, 'moderator'),
+        (ADMIN, 'admin')
+    ]
+    role = models.CharField(
+        max_length=2,
+        choices=USER_CHOICES,
+        default=USER,
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', ]
