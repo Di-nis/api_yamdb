@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'api',
     'titles',
     'users',
+    
 ]
 
 MIDDLEWARE = [
