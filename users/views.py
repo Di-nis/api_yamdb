@@ -52,10 +52,15 @@ def get_token(request):
 # class UserViewSet(viewsets.ModelViewSet):
 # @action(detail=True, methods=['post'])
 # class UserViewSet(ListAPIView):
-class UserListCreate(viewsets.ModelViewSet):
+
+
+# class UserListCreate(viewsets.ModelViewSet):
+# @api_view(['GET', 'POST'])
+# @action(methods=['post'], detail=True)
+class UserListCreate(ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    # permission_classes = (IsAdminUser, )
+    permission_classes = (IsAdminUser, )
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['username']
     search_fields = ['username', ]
