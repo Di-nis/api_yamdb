@@ -27,3 +27,4 @@ urllib3==1.25.9           # via requests
 wcwidth==0.1.9            # via pytest
 zipp==3.1.0               # via importlib-metadata
 djangorestframework-simplejwt==4.4.0
+
