@@ -1,15 +1,25 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import (filters, mixins, permissions, serializers, status,
-                            viewsets)
+from rest_framework import filters, permissions, serializers, viewsets
 from rest_framework.generics import get_object_or_404
+from rest_framework import filters, mixins, permissions, status, viewsets
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
                                    ListModelMixin)
 
-from .filters import TitleFilter
 from .models import Category, Genre, Title
-from .permissions import IsAdministratorOrReadOnly
 from .serializers import (CategorySerializer, GenreSerializer,
                           TitleCreateSerializer, TitleListSerializer)
+
+from .permissions import IsAdministratorOrReadOnly
+from .filters import TitleFilter
+
+
+class BaseCreateListDestroyViewSet(
+    CreateModelMixin,
+    ListModelMixin,
+    DestroyModelMixin,
+    viewsets.GenericViewSet
+):
+    pass
 
 
 class CategoriesViewSet(BaseCreateListDestroyViewSet):
