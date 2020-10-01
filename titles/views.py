@@ -1,14 +1,13 @@
-from rest_framework import filters
-from rest_framework import permissions
-from rest_framework import serializers
-from rest_framework import viewsets
-from rest_framework.generics import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, DestroyModelMixin
+from rest_framework import filters, permissions, serializers, viewsets
+from rest_framework.generics import get_object_or_404
+from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
+                                   ListModelMixin)
 
 from .models import Category, Genre, Title
-from .serializers import (TitleListSerializer, TitleCreateSerializer, 
-                          GenreSerializer, CategorySerializer)
+from .serializers import (CategorySerializer, GenreSerializer,
+                          TitleCreateSerializer, TitleListSerializer)
+
 # from .permissions import IsAdminOrAuthor
 # from .filters import TitleFilter
 
