@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from titles.models import Category, Genre, Title
 
+
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ("pk", "name", "slug")
     search_fields = ("name",)

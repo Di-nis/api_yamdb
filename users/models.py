@@ -1,9 +1,5 @@
-# from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
-
-# from django.contrib.auth.models import PermissionsMixin
-# from authemail.models import EmailUserManager, EmailAbstractUser
 
 
 class MyUserManager(BaseUserManager):
@@ -35,22 +31,32 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-# class User(EmailAbstractUser):
-# class User(AbstractBaseUser, PermissionsMixin):
 class User(AbstractBaseUser):
     first_name = models.CharField('Имя', null=True, blank=True, max_length=40)
     last_name = models.CharField('Фамилия', null=True, blank=True, max_length=40)
-    username = models.CharField(max_length=30, unique=True)
+    username = models.CharField(max_length=30, unique=True, null=True, blank=True)
     bio = models.TextField("О себе", null=True, blank=True)
     email = models.EmailField(verbose_name='Адрес электронной почты', unique=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    # role = 
+    user = 'user'
+    moderator = 'moderator'
+    admin = 'admin'
+    USER_CHOICES = (
+        (user, 'user'),
+        (moderator, 'moderator'),
+        (admin, 'admin')
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=USER_CHOICES,
+        default=user,
+    )
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', ]
+    # REQUIRED_FIELDS = ['username', ]
 
     objects = MyUserManager()
 
@@ -62,5 +68,3 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
-
-
