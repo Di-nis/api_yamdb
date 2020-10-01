@@ -9,7 +9,6 @@ class CategorySerializer(serializers.ModelSerializer):
     «Фильмы», «Книги», «Музыка»
     '''
     class Meta:
-        # fields = '__all__'
         fields = ['name', 'slug']
         model = Category
 
@@ -20,7 +19,7 @@ class GenreSerializer(serializers.ModelSerializer):
     Одно произведение может быть привязано к нескольким жанрам.
     '''
     class Meta:
-        fields = '__all__'
+        fields = ['name', 'slug']
         model = Genre
 
 
@@ -45,7 +44,6 @@ class TitleListSerializer(serializers.ModelSerializer):
     '''Сериализатор для возврата списка произведений'''
     genre = GenreSerializer(many=True)
     category = CategorySerializer()
-    rating = serializers.FloatField()
 
     class Meta:
         fields = '__all__'
