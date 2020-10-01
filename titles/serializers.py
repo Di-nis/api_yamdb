@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from titles.models import Category, Genre, Title
+from titles.models import Category, Genre, Title, Review, Comment
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -48,3 +48,37 @@ class TitleListSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Title
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    '''Сериализатор для возврата списка ревью'''
+    author = serializers.SlugRelatedField(slug_field='username',
+                                          read_only=True)
+
+    class Meta:
+        fields = '__all__'
+        model = Review
+
+    def validate(self, data):
+        super().validate(data)
+
+        if self.context['request'].method != 'POST':
+            return data
+
+        user = self.context['request'].user
+        title_id = (
+            self.context['request'].parser_context['kwargs']['title_id']
+        )
+        if Review.objects.filter(author=user, title__id=title_id).exists():
+            raise serializers.ValidationError(
+                    "Вы уже оставили отзыв на данное произведение")
+        return data
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(slug_field='username',
+                                          read_only=True)
+
+    class Meta:
+        fields = ('id', 'text', 'author', 'pub_date',)
+        model = Comment
