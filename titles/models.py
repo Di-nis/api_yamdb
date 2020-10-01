@@ -31,4 +31,3 @@ class Title(models.Model):
         null=True, 
         blank=True
     )
-
