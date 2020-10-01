@@ -9,7 +9,8 @@ class CategorySerializer(serializers.ModelSerializer):
     «Фильмы», «Книги», «Музыка»
     '''
     class Meta:
-        fields = '__all__'
+        # fields = '__all__'
+        fields = ['name', 'slug']
         model = Category
 
 

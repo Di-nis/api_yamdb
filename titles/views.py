@@ -8,8 +8,8 @@ from .models import Category, Genre, Title
 from .serializers import (CategorySerializer, GenreSerializer,
                           TitleCreateSerializer, TitleListSerializer)
 
-# from .permissions import IsAdminOrAuthor
 # from .filters import TitleFilter
+from .permissions import IsAdministratorOrReadOnly
 
 
 class BaseCreateListDestroyViewSet(
@@ -25,7 +25,7 @@ class CategoriesViewSet(BaseCreateListDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = [filters.SearchFilter]
-    # permission_classes = [IsAdminOrAuthor, ]
+    permission_classes = [IsAdministratorOrReadOnly, ]
     search_fields = ['=name', ]
     lookup_field = 'slug'
 
@@ -42,9 +42,10 @@ class GenresViewSet(BaseCreateListDestroyViewSet):
 class TitlesViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     filter_backends = [DjangoFilterBackend]
-    lookup_field = 'id'
+    filterset_fields = ['category__slug', 'genre__slug', 'name', 'year']
+    # lookup_field = 'id'
     # filterset_class = TitleFilter
-    # permission_classes = [IsAdminOrAuthor, ]
+    # permission_classes = [IsAdministratorOrReadOnly, ]
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
