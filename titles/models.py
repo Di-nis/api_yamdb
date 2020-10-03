@@ -1,5 +1,6 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import Avg
 
 from users.models import User
 
@@ -42,6 +43,10 @@ class Title(models.Model):
         null=True, 
         blank=True
     )
+
+    def update_rating(self):
+        self.rating = self.review.all().aggregate(Avg('score'))['score__avg']
+        self.save()
 
 
 class Review(models.Model):
