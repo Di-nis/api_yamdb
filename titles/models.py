@@ -1,6 +1,8 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from users.models import User
+
 
 class Category(models.Model):
     '''Категории (типы) произведений'''
@@ -40,3 +42,28 @@ class Title(models.Model):
         null=True, 
         blank=True
     )
+
+
+class Review(models.Model):
+    text = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE,
+                               related_name='review')
+    score = models.IntegerField()
+    pub_date = models.DateTimeField(auto_now_add=True)
+    title_id = models.ForeignKey(Title, on_delete=models.CASCADE,
+                                 related_name='review')
+
+    def __str__(self):
+        return self.text
+
+
+class Comment(models.Model):
+    text = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE,
+                               related_name='comments')
+    pub_date = models.DateTimeField(auto_now_add=True)
+    review_id = models.ForeignKey(Review, on_delete=models.CASCADE,
+                                  related_name='comments')
+
+    def __str__(self):
+        return self.text

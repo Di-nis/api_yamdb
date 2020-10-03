@@ -19,4 +19,3 @@ class EmailCodeSerializer(serializers.Serializer):
     email = serializers.EmailField()
     confirmation_code = serializers.CharField(max_length=100)
 
-
