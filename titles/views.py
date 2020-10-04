@@ -1,16 +1,15 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import exceptions, filters, permissions, viewsets
 from rest_framework.generics import get_object_or_404
-from rest_framework import filters, exceptions, permissions, viewsets
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
                                    ListModelMixin)
 
-from .models import Category, Genre, Title, Review, Comment
-from .serializers import (CategorySerializer, GenreSerializer,
-                          TitleCreateSerializer, TitleListSerializer,
-                          ReviewSerializer, CommentSerializer)
-
-from .permissions import IsAdministratorOrReadOnly, IsStaffOrOwnerOrReadOnly
 from .filters import TitleFilter
+from .models import Category, Comment, Genre, Review, Title
+from .permissions import IsAdministratorOrReadOnly, IsStaffOrOwnerOrReadOnly
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ReviewSerializer,
+                          TitleCreateSerializer, TitleListSerializer)
 
 
 class BaseCreateListDestroyViewSet(
@@ -38,7 +37,7 @@ class GenresViewSet(BaseCreateListDestroyViewSet):
     permission_classes = [IsAdministratorOrReadOnly, ]
     search_fields = ['=name', ]
     lookup_field = 'slug'
-    
+
 
 class TitlesViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()

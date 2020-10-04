@@ -29,10 +29,10 @@ class Title(models.Model):
     genre = models.ManyToManyField(Genre)
     rating = models.IntegerField(default=None, null=True, blank=True)
     category = models.ForeignKey(
-        Category, 
-        on_delete=models.SET_NULL, 
-        related_name="category_titles", 
-        null=True, 
+        Category,
+        on_delete=models.SET_NULL,
+        related_name="category_titles",
+        null=True,
         blank=True
     )
 

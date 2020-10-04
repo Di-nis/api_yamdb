@@ -35,16 +35,16 @@ def send_code(request):
     if serializer.is_valid():
         email = serializer.data['email']
         if not User.objects.filter(email=email):
-            user=User.objects.create_user(email=email)
+            user = User.objects.create_user(email=email)
         else:
-            user=User.objects.get(email=email) 
+            user = User.objects.get(email=email)
         confirmation_code = PasswordResetTokenGenerator().make_token(user)
         send_mail(
-        'Confirmation code',
-        confirmation_code,
-        'yamdb@example.com',
-        [email],
-        fail_silently=False,
+            'Confirmation code',
+            confirmation_code,
+            'yamdb@example.com',
+            [email],
+            fail_silently=False,
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -56,7 +56,7 @@ def get_token(request):
     if serializer.is_valid():
         email = serializer.data['email']
         confirmation_code = serializer.data['confirmation_code']
-        user=User.objects.get(email=email)
+        user = User.objects.get(email=email)
         if PasswordResetTokenGenerator().check_token(user, confirmation_code):
             token = AccessToken.for_user(user)
             return Response({'token': f'{token}'}, status=status.HTTP_200_OK)
