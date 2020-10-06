@@ -26,59 +26,29 @@ class User(AbstractBaseUser):
         USER = 'user'
         MODERATOR = 'moderator'
         ADMIN = 'admin'
-    # user = 'user'
-    # moderator = 'moderator'
-    # admin = 'admin'
-    # USER_CHOICES = (
-    #     (user, 'user'),
-    #     (moderator, 'moderator'),
-    #     (admin, 'admin')
-    # )
+
     role = models.CharField(
         max_length=20,
         choices=UserRole.choices,
         default=UserRole.USER
-        # choices=USER_CHOICES,
-        # default=user,
     )
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
 
     objects = MyUserManager()
 
-    def __str__(self):
-        return self.email
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     class Meta:
         verbose_name = 'user'
         verbose_name_plural = 'users'
 
-    def has_perm(self, perm, obj=None):
-        return self.is_admin
-
-    def has_module_perms(self, app_label):
-        return True
-
+    def __str__(self):
+        return self.email
 
     @property
-    def administrator(self):
-        if request.user.is_authenticated:
-            return request.user.role == 'admin' or request.user.is_staff
-        return False
+    def admin(self):
+        return self.role == 'admin' or self.is_staff
 
-    # @property
-    # def is_moderator(self):
-    #     return self.is_admin
-
-
-
-    # class UserRole:
-    #     USER = 'user'
-    #     ADMIN = 'admin'
-    #     MODERATOR = 'moderator'
-    #     choices = [
-    #         (USER, 'user'),
-    #         (ADMIN, 'admin'),
-    #         (MODERATOR, 'moderator'),
-    #     ]
+    @property
+    def moderator(self):
+        return self.role == 'moderator'

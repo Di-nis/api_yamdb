@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Avg
-from titles.validators import validate_year
 
+from titles.validators import validate_year
 from users.models import User
 
 
