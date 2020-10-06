@@ -1,33 +1,7 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 
-
-class MyUserManager(BaseUserManager):
-    def create_user(self, email, username, password=None):
-        if not email:
-            raise ValueError('Неоходимо ввести адрес электронной почты')
-        if not username:
-            raise ValueError('Неоходимо ввести имя пользователя')
-
-        user = self.model(
-            email=self.normalize_email(email),
-            username=username,
-            )
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, username, password):
-        user = self.create_user(
-            email=self.normalize_email(email),
-            password=password,
-            username=username,
-        )
-        user.is_admin = True
-        user.is_staff = True
-        user.is_superuser = True
-        user.save(using=self._db)
-        return user
+from .managers import MyUserManager
 
 
 class User(AbstractBaseUser):
@@ -47,26 +21,38 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    user = 'user'
-    moderator = 'moderator'
-    admin = 'admin'
-    USER_CHOICES = (
-        (user, 'user'),
-        (moderator, 'moderator'),
-        (admin, 'admin')
-    )
+
+    class UserRole(models.TextChoices):
+        USER = 'user'
+        MODERATOR = 'moderator'
+        ADMIN = 'admin'
+    # user = 'user'
+    # moderator = 'moderator'
+    # admin = 'admin'
+    # USER_CHOICES = (
+    #     (user, 'user'),
+    #     (moderator, 'moderator'),
+    #     (admin, 'admin')
+    # )
     role = models.CharField(
         max_length=20,
-        choices=USER_CHOICES,
-        default=user,
+        choices=UserRole.choices,
+        default=UserRole.USER
+        # choices=USER_CHOICES,
+        # default=user,
     )
 
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     objects = MyUserManager()
 
     def __str__(self):
         return self.email
+
+    class Meta:
+        verbose_name = 'user'
+        verbose_name_plural = 'users'
 
     def has_perm(self, perm, obj=None):
         return self.is_admin
@@ -74,12 +60,25 @@ class User(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
-    class UserRole:
-        USER = 'user'
-        ADMIN = 'admin'
-        MODERATOR = 'moderator'
-        choices = [
-            (USER, 'user'),
-            (ADMIN, 'admin'),
-            (MODERATOR, 'moderator'),
-        ]
+
+    @property
+    def administrator(self):
+        if request.user.is_authenticated:
+            return request.user.role == 'admin' or request.user.is_staff
+        return False
+
+    # @property
+    # def is_moderator(self):
+    #     return self.is_admin
+
+
+
+    # class UserRole:
+    #     USER = 'user'
+    #     ADMIN = 'admin'
+    #     MODERATOR = 'moderator'
+    #     choices = [
+    #         (USER, 'user'),
+    #         (ADMIN, 'admin'),
+    #         (MODERATOR, 'moderator'),
+    #     ]
