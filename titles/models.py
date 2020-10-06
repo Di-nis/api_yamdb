@@ -93,7 +93,7 @@ class Review(models.Model):
         db_index=True,
         verbose_name='Дата публикации'
     )
-    title_id = models.ForeignKey(
+    title = models.ForeignKey(
         Title, 
         on_delete=models.CASCADE,
         related_name='review',
@@ -103,7 +103,6 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-
 
     def __str__(self):
         return self.text
