@@ -122,6 +122,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'denis.smirnov1985@gmail.com'
 EMAIL_HOST_PASSWORD = 'Dynamo1923'
 EMAIL_PORT = 587
+DOMAIN_NAME = 'yamdb@example.com'
 
 
 SIMPLE_JWT = {
