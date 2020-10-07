@@ -52,29 +52,33 @@ class TitlesViewSet(viewsets.ModelViewSet):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.all()
+    # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsStaffOrOwnerOrReadOnly]
 
     def get_queryset(self):
-        queryset = self.queryset
-        return queryset.filter(title_id=self.kwargs['title_id'])
+        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        return title.reviews.all()
+        # queryset = self.queryset
+        # return queryset.filter(title_id=self.kwargs['title_id'])
 
     def perform_create(self, serializer):
-        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
-        serializer.save(author=self.request.user, title=title)
-        title.update_rating()
+        get_object_or_404(Title, id=self.kwargs.get('title_id')) 
+        serializer.save(author=self.request.user) 
+        # title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
+        # serializer.save(author=self.request.user, title=title)
+        # title.update_rating()
 
-    def perform_update(self, serializer):
-        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
-        serializer.save(author=self.request.user, title_id=title)
-        title.update_rating()
+    # def perform_update(self, serializer):
+    #     title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
+    #     serializer.save(author=self.request.user, title_id=title)
+    #     title.update_rating()
 
-    def perform_destroy(self, instance):
-        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
-        instance.delete()
-        title.update_rating()
+    # def perform_destroy(self, instance):
+    #     title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
+    #     instance.delete()
+    #     title.update_rating()
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -84,9 +88,13 @@ class CommentViewSet(viewsets.ModelViewSet):
                           IsStaffOrOwnerOrReadOnly]
 
     def get_queryset(self):
-        queryset = self.queryset
-        return queryset.filter(review_id=self.kwargs['review_id'])
+        review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
+        return review.comments.all()
+        # queryset = self.queryset
+        # return queryset.filter(review_id=self.kwargs['review_id'])
 
     def perform_create(self, serializer):
-        review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
-        serializer.save(author=self.request.user, review_id=review)
+        get_object_or_404(Review, id=self.kwargs.get('review_id')) 
+        serializer.save(author=self.request.user)
+        # review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
+        # serializer.save(author=self.request.user, review_id=review)

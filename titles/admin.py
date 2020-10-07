@@ -22,7 +22,7 @@ class TitleAdmin(admin.ModelAdmin):
 
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ("pk", "text", "author", "score", 'pub_date', 'title_id')
+    list_display = ("pk", "text", "author", "score", 'pub_date')
     empty_value_display = '-пусто-'
 
 

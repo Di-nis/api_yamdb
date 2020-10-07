@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Avg
 
-from titles.validators import validate_year
+from titles.validators import validate_year, validate_score
 from users.models import User
 
 
@@ -41,7 +41,8 @@ class Title(models.Model):
         null=True, 
         blank=True, 
         verbose_name='Год выпуска',
-        validators=[validate_year]
+        validators=[validate_year],
+        db_index=True
     )
     description = models.TextField(
         max_length=500, 
@@ -52,11 +53,12 @@ class Title(models.Model):
         related_name='titles',
         verbose_name='Жанры',
     )
-    rating = models.IntegerField(
-        default=None, 
-        null=True, 
-        blank=True
-    )
+    # rating = models.ForeignKey(Review, on_delete=models.CASCADE, verbose_name="Рейтинг")
+    # rating = models.IntegerField(
+    #     default=None, 
+    #     null=True, 
+    #     blank=True
+    # )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
@@ -67,7 +69,7 @@ class Title(models.Model):
     )
 
     def update_rating(self):
-        self.rating = self.review.all().aggregate(Avg('score'))['score__avg']
+        self.rating = self.reviews.all().aggregate(Avg('score'))['score__avg']
         self.save()
 
     class Meta:
@@ -87,7 +89,12 @@ class Review(models.Model):
         related_name='reviews',
         verbose_name='Автор'
     )
-    score = models.IntegerField()
+    # score = models.ForeignKey(
+    #     Title,
+    #     related_name='rating',
+    #     on_delete=models.CASCADE,
+    # )
+    score = models.PositiveIntegerField(validators=[validate_score], verbose_name='Оценка')
     pub_date = models.DateTimeField(
         auto_now_add=True,
         db_index=True,
@@ -96,7 +103,7 @@ class Review(models.Model):
     title = models.ForeignKey(
         Title, 
         on_delete=models.CASCADE,
-        related_name='review',
+        related_name='reviews',
          verbose_name='Произведение'
     )
 
@@ -122,7 +129,7 @@ class Comment(models.Model):
         db_index=True,
         verbose_name='Дата публикации'
     )
-    review_id = models.ForeignKey(
+    review = models.ForeignKey(
         Review, 
         on_delete=models.CASCADE,
         related_name='comments',
