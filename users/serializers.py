@@ -13,6 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class EmailSerializer(serializers.Serializer):
     email = serializers.EmailField()
+    username = serializers.CharField()
 
 
 class EmailCodeSerializer(serializers.Serializer):

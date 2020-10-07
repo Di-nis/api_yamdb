@@ -52,3 +52,9 @@ class User(AbstractBaseUser):
     @property
     def moderator(self):
         return self.role == 'moderator'
+
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
+
+    def has_module_perms(self, app_label):
+        return True
