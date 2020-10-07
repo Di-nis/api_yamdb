@@ -7,9 +7,10 @@ from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
 from .filters import TitleFilter
 from .models import Category, Comment, Genre, Review, Title
 from .permissions import IsAdministratorOrReadOnly, IsStaffOrOwnerOrReadOnly
-from .serializers import (CategorySerializer, CommentSerializer,
+from .serializers import (CategorySerializer,
                           GenreSerializer, ReviewSerializer,
-                          TitleCreateSerializer, TitleListSerializer)
+                          TitleCreateSerializer, TitleListSerializer,
+                          CommentListSerializer, CommentCreateSerializer)
 
 
 class BaseCreateListDestroyViewSet(
@@ -52,38 +53,38 @@ class TitlesViewSet(viewsets.ModelViewSet):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    # queryset = Review.objects.all()
+    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsStaffOrOwnerOrReadOnly]
 
     def get_queryset(self):
-        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
-        return title.reviews.all()
-        # queryset = self.queryset
-        # return queryset.filter(title_id=self.kwargs['title_id'])
+        # title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        # return title.reviews.all()
+        queryset = self.queryset
+        return queryset.filter(title_id=self.kwargs['title_id'])
 
     def perform_create(self, serializer):
-        get_object_or_404(Title, id=self.kwargs.get('title_id')) 
-        serializer.save(author=self.request.user) 
-        # title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
-        # serializer.save(author=self.request.user, title=title)
-        # title.update_rating()
+        # get_object_or_404(Title, id=self.kwargs.get('title_id')) 
+        # serializer.save(author=self.request.user) 
+        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
+        serializer.save(author=self.request.user, title=title)
+        title.update_rating()
 
-    # def perform_update(self, serializer):
-    #     title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
-    #     serializer.save(author=self.request.user, title_id=title)
-    #     title.update_rating()
+    def perform_update(self, serializer):
+        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
+        serializer.save(author=self.request.user, title_id=title)
+        title.update_rating()
 
-    # def perform_destroy(self, instance):
-    #     title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
-    #     instance.delete()
-    #     title.update_rating()
+    def perform_destroy(self, instance):
+        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
+        instance.delete()
+        title.update_rating()
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    # queryset = Comment.objects.all()
+    # serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsStaffOrOwnerOrReadOnly]
 
@@ -94,7 +95,12 @@ class CommentViewSet(viewsets.ModelViewSet):
         # return queryset.filter(review_id=self.kwargs['review_id'])
 
     def perform_create(self, serializer):
-        get_object_or_404(Review, id=self.kwargs.get('review_id')) 
+        review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
         serializer.save(author=self.request.user)
         # review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
         # serializer.save(author=self.request.user, review_id=review)
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return CommentCreateSerializer
+        return CommentListSerializer

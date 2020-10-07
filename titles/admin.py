@@ -27,7 +27,7 @@ class ReviewAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("pk", "text", "author", 'pub_date', 'review_id')
+    list_display = ("pk", "text", "author", 'pub_date')
     empty_value_display = '-пусто-'
 
 
