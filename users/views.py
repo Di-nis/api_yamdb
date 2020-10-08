@@ -19,13 +19,15 @@ class UserViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     permission_classes = (IsAdministrator, )
 
-    @action(methods=['get', 'patch'], detail=False, permission_classes=[IsAuthenticated])
+    @action(methods=['get', 'patch'], detail=False,
+            permission_classes=[IsAuthenticated])
     def me(self, request):
         if request.method == 'GET':
             serializer = UserSerializer(request.user)
             return Response(serializer.data)
         if request.method == 'PATCH':
-            serializer = UserSerializer(request.user, request.data, partial=True)
+            serializer = UserSerializer(request.user, request.data,
+                                        partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

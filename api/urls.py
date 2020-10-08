@@ -3,7 +3,6 @@ from rest_framework.routers import DefaultRouter
 
 from titles.views import (CategoriesViewSet, CommentViewSet, GenresViewSet,
                           ReviewViewSet, TitlesViewSet)
-# from users.views import UserRetrieveUpdate, UserViewSet, get_token, send_code
 from users.views import UserViewSet, get_token, send_code
 
 v1_router = DefaultRouter()

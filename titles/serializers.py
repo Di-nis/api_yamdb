@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 
 from titles.models import Category, Comment, Genre, Review, Title, User
 
@@ -41,32 +40,11 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ('id', 'text', 'author', 'score', 'pub_date')
 
-        # validators = [ 
-        #     UniqueTogetherValidator( 
-        #         queryset=Review.objects.all(), 
-        #         fields=['author', 'title'] 
-        #     )
-        # ]
 
-
-class CommentListSerializer(serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         slug_field='username',
-        # queryset=User.objects.all()
         read_only=True
-    )
-
-    class Meta:
-        model = Comment
-        exclude = ['review']
-
-
-
-class CommentCreateSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(
-        slug_field='username',
-        queryset=User.objects.all(),
-        default=serializers.CurrentUserDefault()
     )
 
     class Meta:
@@ -77,16 +55,13 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 class TitleListSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(read_only=True, many=True)
     category = CategorySerializer(read_only=True)
-    # rating = serializers.SerializerMethodField()
-    # rating = serializers.IntegerField()
-    # review = ReviewSerializer(many=True)
-
-    # def get_rating(self, obj):
-    #     return sum([review.score for review in obj.reviews.all()]) / obj.reviews.count()
+    rating = serializers.FloatField(
+        source='reviews__score__avg', read_only=True
+    )
 
     class Meta:
-        fields = '__all__'
-        # fields = ('id', 'name', 'year', 'genre', 'category', 'description')
+        fields = ('id', 'name', 'year', 'genre',
+                  'category', 'description', 'rating')
         model = Title
 
 
@@ -105,4 +80,3 @@ class TitleCreateSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Title
-
