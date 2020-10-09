@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from titles.models import Category, Comment, Genre, Review, Title, User
+from titles.models import Category, Comment, Genre, Review, Title
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -23,8 +23,11 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
+    class Meta:
+        model = Review
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
+
     def validate(self, data):
-        super().validate(data)
         if self.context['request'].method != 'POST':
             return data
         user = self.context['request'].user
@@ -35,10 +38,6 @@ class ReviewSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Вы уже оставили отзыв на данное произведение")
         return data
-
-    class Meta:
-        model = Review
-        fields = ('id', 'text', 'author', 'score', 'pub_date')
 
 
 class CommentSerializer(serializers.ModelSerializer):

@@ -17,7 +17,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
-    permission_classes = (IsAdministrator, )
+    permission_classes = (IsAdministrator,)
 
     @action(methods=['get', 'patch'], detail=False,
             permission_classes=[IsAuthenticated])
@@ -25,12 +25,11 @@ class UserViewSet(viewsets.ModelViewSet):
         if request.method == 'GET':
             serializer = UserSerializer(request.user)
             return Response(serializer.data)
-        if request.method == 'PATCH':
-            serializer = UserSerializer(request.user, request.data,
-                                        partial=True)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = UserSerializer(request.user, request.data,
+                                    partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -59,3 +58,6 @@ def get_token(request):
     if PasswordResetTokenGenerator().check_token(user, confirmation_code):
         token = AccessToken.for_user(user)
         return Response({'token': f'{token}'}, status=status.HTTP_200_OK)
+    return Response(
+        'Вы ввели неверный адрес электронной почты '
+        'или неверный код подтверждения')
