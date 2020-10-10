@@ -60,4 +60,5 @@ def get_token(request):
         return Response({'token': f'{token}'}, status=status.HTTP_200_OK)
     return Response(
         'Вы ввели неверный адрес электронной почты '
-        'или неверный код подтверждения')
+        'или неверный код подтверждения',
+        status=status.HTTP_400_BAD_REQUEST)
