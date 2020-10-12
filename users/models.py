@@ -5,6 +5,12 @@ from .managers import MyUserManager
 
 
 class User(AbstractBaseUser):
+
+    class UserRole(models.TextChoices):
+        USER = 'user'
+        MODERATOR = 'moderator'
+        ADMIN = 'admin'
+
     first_name = models.CharField('Имя', null=True, blank=True, max_length=40)
     last_name = models.CharField('Фамилия',
                                  null=True,
@@ -17,16 +23,9 @@ class User(AbstractBaseUser):
     bio = models.TextField("О себе", null=True, blank=True)
     email = models.EmailField(verbose_name='Адрес электронной почты',
                               unique=True)
-    is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-
-    class UserRole(models.TextChoices):
-        USER = 'user'
-        MODERATOR = 'moderator'
-        ADMIN = 'admin'
-
     role = models.CharField(
         max_length=20,
         choices=UserRole.choices,
@@ -39,18 +38,18 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = []
 
     class Meta:
-        verbose_name = 'user'
-        verbose_name_plural = 'users'
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
     def __str__(self):
         return self.email
 
     @property
-    def admin(self):
+    def is_admin(self):
         return self.role == 'admin' or self.is_staff
 
     @property
-    def moderator(self):
+    def is_moderator(self):
         return self.role == 'moderator'
 
     def has_perm(self, perm, obj=None):

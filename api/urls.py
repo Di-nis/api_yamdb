@@ -3,7 +3,6 @@ from rest_framework.routers import DefaultRouter
 
 from titles.views import (CategoriesViewSet, CommentViewSet, GenresViewSet,
                           ReviewViewSet, TitlesViewSet)
-# from users.views import UserRetrieveUpdate, UserViewSet, get_token, send_code
 from users.views import UserViewSet, get_token, send_code
 
 v1_router = DefaultRouter()
@@ -11,10 +10,11 @@ v1_router.register('categories', CategoriesViewSet, 'Categories')
 v1_router.register('genres', GenresViewSet, 'Genres')
 v1_router.register('titles', TitlesViewSet, 'Titles')
 v1_router.register('users', UserViewSet, 'Users')
-v1_router.register(r'titles/(?P<title_id>\d+)/reviews', ReviewViewSet)
+v1_router.register(
+    r'titles/(?P<title_id>\d+)/reviews', ReviewViewSet, 'Review')
 v1_router.register(
     r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
-    CommentViewSet)
+    CommentViewSet, 'Comment')
 
 
 extra_patterns = [

@@ -17,37 +17,17 @@ class GenreSerializer(serializers.ModelSerializer):
         model = Genre
 
 
-class TitleCreateSerializer(serializers.ModelSerializer):
-    genre = serializers.SlugRelatedField(
-        slug_field='slug',
-        many=True,
-        queryset=Genre.objects.all()
-    )
-    category = serializers.SlugRelatedField(
-        slug_field='slug',
-        queryset=Category.objects.all()
-    )
-
-    class Meta:
-        fields = '__all__'
-        model = Title
-
-
-class TitleListSerializer(serializers.ModelSerializer):
-    genre = GenreSerializer(many=True)
-    category = CategorySerializer()
-
-    class Meta:
-        fields = '__all__'
-        model = Title
-
-
 class ReviewSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(slug_field='username',
-                                          read_only=True)
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True
+    )
+
+    class Meta:
+        model = Review
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
 
     def validate(self, data):
-        super().validate(data)
         if self.context['request'].method != 'POST':
             return data
         user = self.context['request'].user
@@ -59,14 +39,47 @@ class ReviewSerializer(serializers.ModelSerializer):
                 "Вы уже оставили отзыв на данное произведение")
         return data
 
-    class Meta:
-        model = Review
-        fields = ('id', 'text', 'author', 'score', 'pub_date')
-
 
 class CommentSerializer(serializers.ModelSerializer):
+<<<<<<< HEAD
     author = serializers.ReadOnlyField(source='author.username',read_only=True)
+=======
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True
+    )
+>>>>>>> 626bf9eda7ebf0924e67f44abfc9e03f2b39e79a
 
     class Meta:
         model = Comment
-        fields = ('id', 'text', 'author', 'pub_date')
+        exclude = ['review']
+
+
+class TitleListSerializer(serializers.ModelSerializer):
+    genre = GenreSerializer(read_only=True, many=True)
+    category = CategorySerializer(read_only=True)
+    rating = serializers.FloatField(
+        source='reviews__score__avg', read_only=True
+    )
+
+    class Meta:
+        fields = ('id', 'name', 'year', 'genre',
+                  'category', 'description', 'rating')
+        model = Title
+
+
+class TitleCreateSerializer(serializers.ModelSerializer):
+    genre = serializers.SlugRelatedField(
+        slug_field='slug',
+        many=True,
+        queryset=Genre.objects.all(),
+    )
+
+    category = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Category.objects.all(),
+    )
+
+    class Meta:
+        fields = '__all__'
+        model = Title
