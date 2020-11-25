@@ -41,14 +41,10 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-<<<<<<< HEAD
-    author = serializers.ReadOnlyField(source='author.username',read_only=True)
-=======
     author = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True
     )
->>>>>>> 626bf9eda7ebf0924e67f44abfc9e03f2b39e79a
 
     class Meta:
         model = Comment
